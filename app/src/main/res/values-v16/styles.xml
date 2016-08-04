@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="AppTheme.Text.StepperHeader">
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="AppTheme.Text.StepperHeader.Inactive">
+        <item name="android:textColor">#9E9E9E</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+
+</resources>
