@@ -70,7 +70,6 @@
 
     <FrameLayout
         android:id="@+id/step_content_container"
-        android:tag="container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/step_text_container"
