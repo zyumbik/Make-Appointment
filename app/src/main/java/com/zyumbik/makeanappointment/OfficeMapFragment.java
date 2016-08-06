@@ -3,7 +3,6 @@ package com.zyumbik.makeanappointment;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -17,6 +16,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,7 +29,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
-public class OfficeMapFragment extends Fragment implements OnMapReadyCallback {
+public class OfficeMapFragment extends Fragment implements
+		OnMapReadyCallback,
+		GoogleMap.OnMarkerClickListener,
+		GoogleMap.OnInfoWindowClickListener {
 
 	// Bundle params names
 	private static final String LAT = "LATITUDE", LNG = "LONGITUDE", PERMISSION_DENIED = "PERMISSION";
@@ -42,9 +45,8 @@ public class OfficeMapFragment extends Fragment implements OnMapReadyCallback {
 
 	private static GoogleMap map;
 	private static ArrayList<BankOffice> offices;
-	private static final String URL_SEARCH = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?name=восточный&type=bank&radius=50000&language=ru&key=AIzaSyBtA7fUuV3FBeNsoymahRIPQpKBe89NRSQ";
 
-	private OnFragmentInteractionListener mListener;
+	private OnFragmentInteractionListener interactionListener;
 
 	public static OfficeMapFragment newInstance(Location lastLocation, boolean permissionDenied) {
 		OfficeMapFragment fragment = new OfficeMapFragment();
@@ -84,7 +86,7 @@ public class OfficeMapFragment extends Fragment implements OnMapReadyCallback {
 	public void onAttach(Context context) {
 		super.onAttach(context);
 		if (context instanceof OnFragmentInteractionListener) {
-			mListener = (OnFragmentInteractionListener) context;
+			interactionListener = (OnFragmentInteractionListener) context;
 		} else {
 			throw new RuntimeException(context.toString()
 					+ " must implement OnFragmentInteractionListener");
@@ -92,9 +94,14 @@ public class OfficeMapFragment extends Fragment implements OnMapReadyCallback {
 	}
 
 	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+	}
+
+	@Override
 	public void onDetach() {
 		super.onDetach();
-		mListener = null;
+		interactionListener = null;
 	}
 
 	@Override
@@ -102,23 +109,38 @@ public class OfficeMapFragment extends Fragment implements OnMapReadyCallback {
 		map = googleMap;
 
 		enableMyLocation();
+
 		new GetOfficeData().execute();
 
-		LatLng latLng;
+		map.moveCamera(CameraUpdateFactory.newLatLngZoom(getLatLngForCamera(), KHABAROVSK_ZOOM));
+		map.setOnMarkerClickListener(this);
+		map.setOnInfoWindowClickListener(this);
+	}
+
+	@Override
+	public void onInfoWindowClick(Marker marker) {
+
+	}
+
+	@Override
+	public boolean onMarkerClick(Marker marker) {
+		return false;
+	}
+
+	private LatLng getLatLngForCamera() {
 		if (lastLongitude != 0 && lastLatitude != 0){
-			latLng = new LatLng(lastLatitude, lastLongitude);
+			return new LatLng(lastLatitude, lastLongitude);
 		} else {
-			latLng = new LatLng(KHABAROVSK_LAT, KHABAROVSK_LNG);
+			return new LatLng(KHABAROVSK_LAT, KHABAROVSK_LNG);
 		}
-		map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, KHABAROVSK_ZOOM));
 	}
 
 	private void getOfficesData() throws IOException, JSONException {
 		URL url;
 		if (lastLatitude != 0 && lastLongitude != 0) {
-			url = new URL(URL_SEARCH + "&location=" + lastLatitude + "," + lastLongitude);
+			url = new URL(SearchURLConfiguration.getLocationUrlSearch(lastLatitude, lastLongitude));
 		} else {
-			url = new URL(URL_SEARCH + "&location=" + KHABAROVSK_LAT + "," + KHABAROVSK_LNG);
+			url = new URL(SearchURLConfiguration.getLocationUrlSearch(KHABAROVSK_LAT, KHABAROVSK_LNG));
 		}
 
 		HttpURLConnection urlConnection;
@@ -154,18 +176,14 @@ public class OfficeMapFragment extends Fragment implements OnMapReadyCallback {
 
 					if (!geo.has("permanently_closed")) {
 						JSONObject jLocation = geo.getJSONObject("geometry");
-						JSONObject jgetLocation = jLocation
+						JSONObject jGetLocation = jLocation
 								.getJSONObject("location");
 
-						String address = geo.getString("vicinity");
-						String name = geo.getString("name");
-						double lat = jgetLocation.getDouble("lat");
-						double lng = jgetLocation.getDouble("lng");
-						offices.add(new BankOffice(address, name, lat, lng));
+						offices.add(new BankOffice(geo.getString("vicinity"), geo.getString("name"),
+								jGetLocation.getDouble("lat"), jGetLocation.getDouble("lng")));
 					}
 				}
 			}
-			System.out.println(offices.size());
 		}
 	}
 
@@ -188,10 +206,9 @@ public class OfficeMapFragment extends Fragment implements OnMapReadyCallback {
 		map.setMyLocationEnabled(true);
 	}
 
-	// TODO: Rename method, update argument and hook method into UI event
-	public void onButtonPressed(Uri uri) {
-		if (mListener != null) {
-			mListener.onFragmentInteraction(uri);
+	public void onFragmentLoaded() {
+		if (interactionListener != null) {
+			interactionListener.onFragmentLoaded(offices);
 		}
 	}
 
@@ -199,10 +216,12 @@ public class OfficeMapFragment extends Fragment implements OnMapReadyCallback {
 
 		@Override
 		protected Void doInBackground(Void... params) {
-			try {
-				getOfficesData();
-			} catch (IOException | JSONException e) {
-				e.printStackTrace();
+			if (offices == null) {
+				try {
+					getOfficesData();
+				} catch (IOException | JSONException e) {
+					e.printStackTrace();
+				}
 			}
 			return null;
 		}
@@ -211,12 +230,12 @@ public class OfficeMapFragment extends Fragment implements OnMapReadyCallback {
 		protected void onPostExecute(Void aVoid) {
 			super.onPostExecute(aVoid);
 			setOfficeMarkers();
+			onFragmentLoaded();
 		}
 	}
 
 	public interface OnFragmentInteractionListener {
-		// TODO: Update argument type and name
-		void onFragmentInteraction(Uri uri);
+		void onFragmentLoaded(ArrayList<BankOffice> offices);
 	}
 
 }

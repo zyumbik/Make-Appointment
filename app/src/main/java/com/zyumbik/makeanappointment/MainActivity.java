@@ -22,13 +22,16 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity implements OfficeMapFragment.OnFragmentInteractionListener,
 		GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
 		ActivityCompat.OnRequestPermissionsResultCallback {
 
-	View step1, step2, step3;
-	FragmentManager fragmentManager;
-	GoogleApiClient googleApiClient;
+	private View step1, step2, step3;
+	private FragmentManager fragmentManager;
+	private GoogleApiClient googleApiClient;
+	private ArrayList<BankOffice> offices;
 
 	private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
 	private boolean permissionDenied = false;
@@ -57,10 +60,8 @@ public class MainActivity extends AppCompatActivity implements OfficeMapFragment
 		parent.addView(step3);
 		setContentView(mainView);
 
-		TextView buttonText2 = (TextView) step2.findViewById(R.id.button_text);
-		buttonText2.setText("2");
-		TextView buttonText3 = (TextView) step3.findViewById(R.id.button_text);
-		buttonText3.setText("3");
+		((TextView) step2.findViewById(R.id.button_text)).setText("2");
+		((TextView) step3.findViewById(R.id.button_text)).setText("3");
 		step3.findViewById(R.id.stepper_connector).setVisibility(View.GONE);
 
 	}
@@ -96,8 +97,8 @@ public class MainActivity extends AppCompatActivity implements OfficeMapFragment
 	}
 
 	@Override
-	public void onFragmentInteraction(Uri uri) {
-
+	public void onFragmentLoaded(ArrayList<BankOffice> offices) {
+		this.offices = offices;
 	}
 
 	@Override
