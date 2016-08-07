@@ -1,4 +1,4 @@
-package com.zyumbik.makeanappointment;
+package com.zyumbik.makeanappointment.data_models;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;

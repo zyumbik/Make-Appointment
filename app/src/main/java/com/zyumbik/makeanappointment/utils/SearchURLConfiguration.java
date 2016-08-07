@@ -1,4 +1,4 @@
-package com.zyumbik.makeanappointment;
+package com.zyumbik.makeanappointment.utils;
 
 /** Created by glebsabirzanov on 06/08/16. */
 /** Utility class for building working search */
