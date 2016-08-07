@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -28,6 +29,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class OfficeMapFragment extends Fragment implements
 		OnMapReadyCallback,
@@ -44,7 +47,7 @@ public class OfficeMapFragment extends Fragment implements
 	private static double lastLatitude, lastLongitude;
 
 	private static GoogleMap map;
-	private static ArrayList<BankOffice> offices;
+	private static Map<String, BankOffice> offices;
 
 	private OnFragmentInteractionListener interactionListener;
 
@@ -119,11 +122,16 @@ public class OfficeMapFragment extends Fragment implements
 
 	@Override
 	public void onInfoWindowClick(Marker marker) {
-
+		if (interactionListener != null) {
+			interactionListener.onInfoWindowClick(offices.get(marker.getTitle()));
+		}
 	}
 
 	@Override
 	public boolean onMarkerClick(Marker marker) {
+		if (interactionListener != null) {
+			interactionListener.onMarkerClicked(offices.get(marker.getTitle()));
+		}
 		return false;
 	}
 
@@ -168,7 +176,7 @@ public class OfficeMapFragment extends Fragment implements
 
 			JSONObject jObject = new JSONObject(data);
 			JSONArray jArray = jObject.getJSONArray("results");
-			offices = new ArrayList<>();
+			offices = new HashMap<>();
 
 			if (jArray.length() > 0) {
 				for (int i = 0; i < jArray.length(); i++) {
@@ -179,8 +187,9 @@ public class OfficeMapFragment extends Fragment implements
 						JSONObject jGetLocation = jLocation
 								.getJSONObject("location");
 
-						offices.add(new BankOffice(geo.getString("vicinity"), geo.getString("name"),
-								jGetLocation.getDouble("lat"), jGetLocation.getDouble("lng")));
+						BankOffice office = new BankOffice(geo.getString("vicinity"), geo.getString("name"),
+								jGetLocation.getDouble("lat"), jGetLocation.getDouble("lng"));
+						offices.put(office.getTitle(), office);
 					}
 				}
 			}
@@ -189,8 +198,8 @@ public class OfficeMapFragment extends Fragment implements
 
 	private void setOfficeMarkers() {
 		if (map != null && offices != null) {
-			for (BankOffice office : offices) {
-				map.addMarker(office.getMarkerOptions());
+			for (Map.Entry<String, BankOffice> office : offices.entrySet()) {
+				map.addMarker(office.getValue().getMarkerOptions());
 			}
 		}
 	}
@@ -204,12 +213,6 @@ public class OfficeMapFragment extends Fragment implements
 			return;
 		}
 		map.setMyLocationEnabled(true);
-	}
-
-	public void onFragmentLoaded() {
-		if (interactionListener != null) {
-			interactionListener.onFragmentLoaded(offices);
-		}
 	}
 
 	private class GetOfficeData extends AsyncTask<Void, Void, Void> {
@@ -230,12 +233,13 @@ public class OfficeMapFragment extends Fragment implements
 		protected void onPostExecute(Void aVoid) {
 			super.onPostExecute(aVoid);
 			setOfficeMarkers();
-			onFragmentLoaded();
 		}
+
 	}
 
 	public interface OnFragmentInteractionListener {
-		void onFragmentLoaded(ArrayList<BankOffice> offices);
+		void onMarkerClicked(BankOffice office);
+		void onInfoWindowClick(BankOffice office);
 	}
 
 }

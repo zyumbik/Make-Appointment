@@ -9,5 +9,11 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="step_1_header">Choose an office</string>
+    <string name="step_2_header">Choose date and time</string>
+    <string name="step_3_header">Confirm</string>
+    <string name="step_1_subhead">Choose the office on the map you want to make an appointment in</string>
+    <string name="step_2_subhead">Select appropriate date and time</string>
+    <string name="step_3_subhead">Confirm details about your appointment</string>
 
 </resources>
