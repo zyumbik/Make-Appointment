@@ -1,5 +1,6 @@
 package com.zyumbik.makeanappointment;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -24,6 +25,7 @@ import com.google.android.gms.location.LocationServices;
 import com.zyumbik.makeanappointment.custom_views.StepLayout;
 import com.zyumbik.makeanappointment.data_models.AppointmentData;
 import com.zyumbik.makeanappointment.data_models.BankOffice;
+import com.zyumbik.makeanappointment.utils.DataSender;
 import com.zyumbik.makeanappointment.utils.PermissionUtils;
 
 import java.util.GregorianCalendar;
@@ -34,11 +36,13 @@ public class MainActivity extends AppCompatActivity implements OfficeMapFragment
 		ActivityCompat.OnRequestPermissionsResultCallback,
 		StepLayout.onStepInteractionListener,
 		DatePickerDialog.OnDateSetListener,
-		TimePickerDialog.OnTimeSetListener {
+		TimePickerDialog.OnTimeSetListener,
+		DataSender.OnTaskFinished {
 
 	private StepLayout[] steps = new StepLayout[3];
 	private GoogleApiClient googleApiClient;
 	private GregorianCalendar cal;
+	private ProgressDialog progressDialog;
 
 	private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
 	private boolean permissionDenied = false;
@@ -50,13 +54,9 @@ public class MainActivity extends AppCompatActivity implements OfficeMapFragment
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		if (googleApiClient == null) {
-			googleApiClient = new GoogleApiClient.Builder(this)
-					.addConnectionCallbacks(this)
-					.addOnConnectionFailedListener(this)
-					.addApi(LocationServices.API)
-					.build();
-		}
+		showProgressDialog();
+
+		setupGoogleApi();
 
 		appointmentData = new AppointmentData();
 		initialStepperSetup();
@@ -73,13 +73,16 @@ public class MainActivity extends AppCompatActivity implements OfficeMapFragment
 			steps[i].initializeStep(i + 1, this);
 		}
 		setContentView(mainView);
+
+		// Inflate button for the last step
+		((FrameLayout) steps[2].getContent()).addView(inflater.inflate(R.layout.confirmation_step, null));
 	}
 
 	private void createMapFragment() {
 		FragmentManager fragmentManager = getSupportFragmentManager();
 		checkLocationPermission();
-		FragmentTransaction transaction = fragmentManager.beginTransaction();
 		OfficeMapFragment map = OfficeMapFragment.newInstance(lastLocation, permissionDenied);
+		FragmentTransaction transaction = fragmentManager.beginTransaction();
 		transaction.add(steps[0].getContent().getId(), map);
 		transaction.commit();
 	}
@@ -119,6 +122,16 @@ public class MainActivity extends AppCompatActivity implements OfficeMapFragment
 	}
 
 	@Override
+	public void onConfirm() {
+		new DataSender(appointmentData, "https://google.com", this);
+		for (StepLayout step : steps) {
+			step.setStepClickable(false);
+			step.deselectStep();
+			step.stepCompleted();
+		}
+	}
+
+	@Override
 	public void onMarkerClicked(BankOffice office) {
 		steps[0].setSubheadText(office.getAddress());
 		appointmentData.setOffice(office);
@@ -134,6 +147,11 @@ public class MainActivity extends AppCompatActivity implements OfficeMapFragment
 	}
 
 	@Override
+	public void onMarkersLoaded() {
+		dismissProgressDialog();
+	}
+
+	@Override
 	public void onDateSet(DatePickerDialog dialog, int year, int monthOfYear, int dayOfMonth) {
 		showTimePicker();
 		appointmentData.setDate(dayOfMonth, monthOfYear, year);
@@ -144,6 +162,7 @@ public class MainActivity extends AppCompatActivity implements OfficeMapFragment
 		appointmentData.setTime(hourOfDay, minute);
 		steps[1].setSubheadText(appointmentData.getDateTime());
 		selectNextStep(1);
+		steps[2].setSubheadText(appointmentData.toString());
 	}
 
 	private void selectNextStep(int currentStep) {
@@ -184,6 +203,32 @@ public class MainActivity extends AppCompatActivity implements OfficeMapFragment
 		}
 	}
 
+	private void showProgressDialog() {
+		if (progressDialog == null) {
+			progressDialog = new ProgressDialog(this);
+			progressDialog.setCancelable(false);
+			progressDialog.setTitle("Loading");
+			progressDialog.setMessage("Please wait...");
+		}
+		progressDialog.show();
+	}
+
+	private void dismissProgressDialog() {
+		if (progressDialog != null) {
+			progressDialog.dismiss();
+		}
+	}
+
+	private void setupGoogleApi() {
+		if (googleApiClient == null) {
+			googleApiClient = new GoogleApiClient.Builder(this)
+					.addConnectionCallbacks(this)
+					.addOnConnectionFailedListener(this)
+					.addApi(LocationServices.API)
+					.build();
+		}
+	}
+
 	@Override
 	public void onConnectionSuspended(int i) {}
 
@@ -200,4 +245,17 @@ public class MainActivity extends AppCompatActivity implements OfficeMapFragment
 		permissionDenied = !PermissionUtils.isPermissionGranted(permissions, grantResults, android.Manifest.permission.ACCESS_FINE_LOCATION);
 	}
 
+	@Override
+	public void onTaskStarted() {
+		showProgressDialog();
+	}
+
+	@Override
+	public void onSuccess(String outputMessage) {
+		dismissProgressDialog();
+	}
+	@Override
+	public void onError(String errorMessage) {
+		dismissProgressDialog();
+	}
 }

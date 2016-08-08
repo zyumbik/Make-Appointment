@@ -2,6 +2,10 @@ package com.zyumbik.makeanappointment.data_models;
 
 
 /** Created by glebsabirzanov on 07/08/16. */
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /** Class containing information about the appointment */
 public class AppointmentData {
 
@@ -49,4 +53,19 @@ public class AppointmentData {
 	public void setOffice(BankOffice office) {
 		this.office = office;
 	}
+
+	public JSONObject getAppointmentJSON() throws JSONException {
+		JSONObject object = new JSONObject();
+		object.put("date", new JSONObject()
+				.put("day", day)
+				.put("month", month)
+				.put("year", year));
+		object.put("time", new JSONObject().put("hour", hour).put("minute", minute));
+		object.put("address", office.getAddress());
+		object.put("latlng", new JSONObject()
+				.put("latitude", office.getLatLng().latitude)
+				.put("longitude", office.getLatLng().longitude));
+		return object;
+	}
+
 }

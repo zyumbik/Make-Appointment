@@ -202,6 +202,7 @@ public class OfficeMapFragment extends Fragment implements
 				map.addMarker(office.getValue().getMarkerOptions());
 			}
 		}
+		interactionListener.onMarkersLoaded();
 	}
 
 	private void enableMyLocation() {
@@ -240,6 +241,7 @@ public class OfficeMapFragment extends Fragment implements
 	public interface OnFragmentInteractionListener {
 		void onMarkerClicked(BankOffice office);
 		void onInfoWindowClick(BankOffice office);
+		void onMarkersLoaded();
 	}
 
 }

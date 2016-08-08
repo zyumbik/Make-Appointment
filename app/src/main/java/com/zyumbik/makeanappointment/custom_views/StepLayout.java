@@ -5,6 +5,7 @@ import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -23,12 +24,13 @@ public class StepLayout extends RelativeLayout {
 	private RelativeLayout.LayoutParams connectorParams;
 	private TextView subhead, buttonText;
 	private ImageButton stepButton;
+	private Button buttonConfirm;
 
 	private onStepInteractionListener interactionListener;
 	private OnClickListener clickListener;
 
 	// Default settings for steps
-	public void initializeStep(int stepNumber, onStepInteractionListener interactionListener) {
+	public void initializeStep(int stepNumber, final onStepInteractionListener interactionListener) {
 		this.stepNumber = stepNumber;
 		this.interactionListener = interactionListener;
 		connector = findViewById(R.id.stepper_connector);
@@ -72,12 +74,25 @@ public class StepLayout extends RelativeLayout {
 		setButtonBackground(R.drawable.step_button_selected);
 		interactionListener.onStepSelect(stepNumber);
 		clickable = true;
+		if (stepNumber == 3) {
+			buttonConfirm = (Button) content.findViewById(R.id.button_confirm);
+			buttonConfirm.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					interactionListener.onConfirm();
+					buttonConfirm.setEnabled(false);
+				}
+			});
+			buttonConfirm.setEnabled(true);
+		}
 	}
 
 	// Deselect this step
 	public void deselectStep() {
 		setButtonBackground(R.drawable.step_button_unselected);
-		content.setVisibility(GONE);
+		if (stepNumber != 3) {
+			content.setVisibility(GONE);
+		}
 		if (stepNumber == 1) {
 			switchConnectorParams();
 		}
@@ -122,17 +137,18 @@ public class StepLayout extends RelativeLayout {
 		return content;
 	}
 
-	private void setButtonBackground(int drawableResourse) {
+	private void setButtonBackground(int drawableResource) {
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-			stepButton.setBackgroundDrawable(ContextCompat.getDrawable(this.getContext(), drawableResourse));
+			stepButton.setBackgroundDrawable(ContextCompat.getDrawable(this.getContext(), drawableResource));
 		} else {
-			stepButton.setBackground(ContextCompat.getDrawable(this.getContext(), drawableResourse));
+			stepButton.setBackground(ContextCompat.getDrawable(this.getContext(), drawableResource));
 		}
 	}
 
 	public interface onStepInteractionListener {
 		void onStepClick(int stepNumber);
 		void onStepSelect(int stepNumber);
+		void onConfirm();
 	}
 
 	// When step has no content in it, it's connector line should be 32dp.
