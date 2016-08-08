@@ -8,7 +8,10 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="AppTheme.ConnectorLine">
+    <style name="VerticalConnector">
+        <item name="android:layout_width">1dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:minHeight">32dp</item>
         <item name="android:background">#BDBDBD</item>
     </style>
 

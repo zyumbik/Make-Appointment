@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.zyumbik.makeanappointment.custom_views.StepLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/background_step">
+
+    <FrameLayout
+        android:id="@+id/step_button_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp">
+
+        <ImageButton
+            android:id="@+id/step_button"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@drawable/step_button_selected"/>
+
+        <TextView
+            android:id="@+id/button_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@android:color/white"
+            android:text="1"
+            android:textAppearance="@style/AppTheme.Text.StepperCircle"/>
+
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/text_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/step_button_container"
+        android:layout_toEndOf="@id/step_button_container"
+        android:layout_alignTop="@id/step_button_container"
+        android:layout_alignBottom="@id/step_button_container"
+        android:gravity="center_vertical"
+        android:textAppearance="@style/AppTheme.Text.StepperHeader"
+        android:text="Header"/>
+
+    <LinearLayout
+        android:id="@+id/container_content_and_subhead"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/step_button_container"
+        android:layout_toEndOf="@id/step_button_container"
+        android:layout_below="@id/text_header"
+        android:layout_alignBaseline="@id/text_header"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/text_subhead"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="16dp"
+            android:textAppearance="@style/AppTheme.Text.StepperSubhead"
+            android:text="Subhead"/>
+
+        <FrameLayout
+            android:id="@+id/step_content_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/stepper_connector"
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:layout_below="@id/step_button_container"
+        android:layout_alignStart="@id/step_button_container"
+        android:layout_alignEnd="@id/step_button_container"
+        android:layout_alignLeft="@id/step_button_container"
+        android:layout_alignRight="@id/step_button_container"
+        android:layout_alignBottom="@id/container_content_and_subhead">
+
+        <View
+            android:layout_gravity="center"
+            style="@style/VerticalConnector"/>
+
+    </FrameLayout>
+
+</com.zyumbik.makeanappointment.custom_views.StepLayout>
