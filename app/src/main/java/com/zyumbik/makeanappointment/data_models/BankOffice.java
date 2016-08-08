@@ -18,6 +18,7 @@ public class BankOffice {
 		makeTitle();
 	}
 
+	// Makes better readable identical title for map markers
 	private void makeTitle() {
 		title = address;
 		for (String exclusion : toExcludeFromTitle) {
@@ -25,6 +26,11 @@ public class BankOffice {
 				title = title.replace(exclusion, "");
 			}
 		}
+	}
+
+	@Override
+	public String toString() {
+		return title + ", " + address;
 	}
 
 	public String getAddress() {

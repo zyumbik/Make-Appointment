@@ -1,12 +1,13 @@
 package com.zyumbik.makeanappointment.custom_views;
 
 import android.content.Context;
+import android.os.Build;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.zyumbik.makeanappointment.R;
 
@@ -15,31 +16,36 @@ import com.zyumbik.makeanappointment.R;
 public class StepLayout extends RelativeLayout {
 
 	private int stepNumber = 0;
-	private boolean selectable = false;
+	private boolean clickable = false;
 	private static int currentlySelected = 0;
 
 	private View content, connector;
 	private RelativeLayout.LayoutParams connectorParams;
 	private TextView subhead, buttonText;
+	private ImageButton stepButton;
 
-	private onStepSelectListener selectListener;
+	private onStepInteractionListener interactionListener;
+	private OnClickListener clickListener;
 
 	// Default settings for steps
-	public void initializeStep(int stepNumber, onStepSelectListener selectListener) {
+	public void initializeStep(int stepNumber, onStepInteractionListener interactionListener) {
 		this.stepNumber = stepNumber;
-		this.selectListener = selectListener;
+		this.interactionListener = interactionListener;
 		connector = findViewById(R.id.stepper_connector);
 		content = findViewById(R.id.step_content_container);
 		subhead = (TextView) findViewById(R.id.text_subhead);
 		buttonText = (TextView) findViewById(R.id.button_text);
+		stepButton = (ImageButton) findViewById(R.id.step_button);
+
 		connectorParams = (RelativeLayout.LayoutParams) connector.getLayoutParams();
 		buttonText.setText(String.valueOf(stepNumber));
 		setOnClickListener();
+
 		switch (stepNumber) {
 			case 1:
 				((TextView) findViewById(R.id.text_header)).setText(R.string.step_1_header);
 				subhead.setText(R.string.step_1_subhead);
-				selectable = true;
+				clickable = true;
 				currentlySelected = 1;
 				break;
 			case 2:
@@ -59,60 +65,74 @@ public class StepLayout extends RelativeLayout {
 		}
 	}
 
-	// This step is selected, deselect other steps by sending onStepSelect callback
+	// This step is selected, deselect other steps by sending onStepClick callback
 	public void selectStep() {
-		if (currentlySelected != stepNumber) {
-			currentlySelected = stepNumber;
-			selectListener.onStepSelect(currentlySelected);
-			selectable = true;
-			content.setVisibility(VISIBLE);
-		}
-	}
-
-	// Used for selecting exact step if necessary
-	public void selectStep(int stepNumber) {
-		if (currentlySelected != stepNumber) {
-			currentlySelected = stepNumber;
-			selectListener.onStepSelect(currentlySelected);
-		}
-	}
-
-	// Select next step if possible
-	public void nextStep() {
-		if (currentlySelected < 4) {
-			currentlySelected++;
-			selectListener.onStepSelect(currentlySelected);
-		}
+		currentlySelected = stepNumber;
+		content.setVisibility(VISIBLE);
+		setButtonBackground(R.drawable.step_button_selected);
+		interactionListener.onStepSelect(stepNumber);
+		clickable = true;
 	}
 
 	// Deselect this step
 	public void deselectStep() {
+		setButtonBackground(R.drawable.step_button_unselected);
 		content.setVisibility(GONE);
+		if (stepNumber == 1) {
+			switchConnectorParams();
+		}
+	}
+
+	// Called when the step returned some data from user
+	public void stepCompleted() {
+		stepButton.setImageDrawable(ContextCompat.getDrawable(this.getContext(), R.drawable.ic_check_16dp));
+		buttonText.setText("");
+	}
+
+	// Step can be selected if it is clickable and not selected already
+	public boolean isSelectable() {
+		return clickable && !(currentlySelected == stepNumber);
+	}
+
+	public boolean isStepClickable() {
+		return clickable;
+	}
+
+	public void setStepClickable(boolean clickable) {
+		this.clickable = clickable;
 	}
 
 	// This step is clicked. Select it if possible.
 	private void setOnClickListener() {
-		super.setOnClickListener(new OnClickListener() {
+		clickListener = new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if (selectable) {
-					selectStep();
-				}
+				interactionListener.onStepClick(stepNumber);
 			}
-		});
+		};
+		super.setOnClickListener(clickListener);
 	}
 
 	// This step returned some data from user. Now let user to move on by clicking on the title.
 	public void setSubheadText(String text) {
 		subhead.setText(text);
-		if (!subhead.hasOnClickListeners()) {
-			subhead.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					nextStep();
-				}
-			});
+	}
+
+	public View getContent() {
+		return content;
+	}
+
+	private void setButtonBackground(int drawableResourse) {
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
+			stepButton.setBackgroundDrawable(ContextCompat.getDrawable(this.getContext(), drawableResourse));
+		} else {
+			stepButton.setBackground(ContextCompat.getDrawable(this.getContext(), drawableResourse));
 		}
+	}
+
+	public interface onStepInteractionListener {
+		void onStepClick(int stepNumber);
+		void onStepSelect(int stepNumber);
 	}
 
 	// When step has no content in it, it's connector line should be 32dp.
@@ -124,10 +144,6 @@ public class StepLayout extends RelativeLayout {
 			connectorParams.addRule(RelativeLayout.ALIGN_BOTTOM, R.id.container_content_and_subhead);
 		}
 		connector.setLayoutParams(connectorParams);
-	}
-
-	public interface onStepSelectListener {
-		void onStepSelect(int stepNumber);
 	}
 
 	// Default constructors

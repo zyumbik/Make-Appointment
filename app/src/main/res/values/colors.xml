@@ -3,4 +3,9 @@
     <color name="colorPrimary">#3f51b5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="step_selected">@color/colorPrimary</color>
+    <color name="step_selected_clicked">@color/colorPrimaryDark</color>
+    <color name="step_unselected">#616161</color>
+    <color name="step_unselected_clicked">#4D4D4D</color>
+    <color name="background_onclick">#F0F0F0</color>
 </resources>

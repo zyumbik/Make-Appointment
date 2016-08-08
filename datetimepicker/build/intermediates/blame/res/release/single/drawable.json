@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "/Users/glebsabirzanov/Documents/Code/Android/MakeAppointment/datetimepicker/build/intermediates/res/merged/release/drawable/done_background_color.xml",
+        "source": "/Users/glebsabirzanov/Documents/Code/Android/MakeAppointment/datetimepicker/src/main/res/drawable/done_background_color.xml"
+    },
+    {
+        "merged": "/Users/glebsabirzanov/Documents/Code/Android/MakeAppointment/datetimepicker/build/intermediates/res/merged/release/drawable/done_background_color_dark.xml",
+        "source": "/Users/glebsabirzanov/Documents/Code/Android/MakeAppointment/datetimepicker/src/main/res/drawable/done_background_color_dark.xml"
+    }
+]

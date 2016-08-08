@@ -14,16 +14,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.android.datetimepicker.date.DatePickerDialog;
-import com.android.datetimepicker.date.MonthAdapter;
 import com.android.datetimepicker.time.RadialPickerLayout;
 import com.android.datetimepicker.time.TimePickerDialog;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.zyumbik.makeanappointment.custom_views.StepLayout;
+import com.zyumbik.makeanappointment.data_models.AppointmentData;
 import com.zyumbik.makeanappointment.data_models.BankOffice;
 import com.zyumbik.makeanappointment.utils.PermissionUtils;
 
@@ -33,7 +32,7 @@ public class MainActivity extends AppCompatActivity implements OfficeMapFragment
 		GoogleApiClient.ConnectionCallbacks,
 		GoogleApiClient.OnConnectionFailedListener,
 		ActivityCompat.OnRequestPermissionsResultCallback,
-		StepLayout.onStepSelectListener,
+		StepLayout.onStepInteractionListener,
 		DatePickerDialog.OnDateSetListener,
 		TimePickerDialog.OnTimeSetListener {
 
@@ -44,6 +43,8 @@ public class MainActivity extends AppCompatActivity implements OfficeMapFragment
 	private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
 	private boolean permissionDenied = false;
 	private Location lastLocation;
+
+	private AppointmentData appointmentData;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements OfficeMapFragment
 					.build();
 		}
 
+		appointmentData = new AppointmentData();
 		initialStepperSetup();
 
 	}
@@ -70,15 +72,15 @@ public class MainActivity extends AppCompatActivity implements OfficeMapFragment
 			parent.addView(steps[i]);
 			steps[i].initializeStep(i + 1, this);
 		}
+		setContentView(mainView);
 	}
 
 	private void createMapFragment() {
-		FrameLayout container = (FrameLayout) steps[0].findViewById(R.id.step_content_container);
 		FragmentManager fragmentManager = getSupportFragmentManager();
 		checkLocationPermission();
 		FragmentTransaction transaction = fragmentManager.beginTransaction();
 		OfficeMapFragment map = OfficeMapFragment.newInstance(lastLocation, permissionDenied);
-		transaction.add(container.getId(), map);
+		transaction.add(steps[0].getContent().getId(), map);
 		transaction.commit();
 	}
 
@@ -96,6 +98,15 @@ public class MainActivity extends AppCompatActivity implements OfficeMapFragment
 	}
 
 	@Override
+	public void onStepClick(int stepNumber) {
+		if (steps[stepNumber - 1].isSelectable()) {
+			steps[stepNumber - 1].selectStep();
+		} else if(stepNumber == 2 && steps[1].isStepClickable()) {
+			showDatePicker();
+		}
+	}
+
+	@Override
 	public void onStepSelect(int stepNumber) {
 		for (int i = 0; i < steps.length; i++) {
 			if (i + 1 != stepNumber) {
@@ -110,22 +121,34 @@ public class MainActivity extends AppCompatActivity implements OfficeMapFragment
 	@Override
 	public void onMarkerClicked(BankOffice office) {
 		steps[0].setSubheadText(office.getAddress());
+		appointmentData.setOffice(office);
+		steps[0].stepCompleted();
+		steps[1].setStepClickable(true);
 	}
 
 	@Override
 	public void onInfoWindowClick(BankOffice office) {
 		steps[0].setSubheadText(office.getAddress());
-		steps[0].nextStep();
+		appointmentData.setOffice(office);
+		selectNextStep(0);
 	}
 
 	@Override
 	public void onDateSet(DatePickerDialog dialog, int year, int monthOfYear, int dayOfMonth) {
 		showTimePicker();
+		appointmentData.setDate(dayOfMonth, monthOfYear, year);
 	}
 
 	@Override
 	public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute) {
+		appointmentData.setTime(hourOfDay, minute);
+		steps[1].setSubheadText(appointmentData.getDateTime());
+		selectNextStep(1);
+	}
 
+	private void selectNextStep(int currentStep) {
+		steps[currentStep++].stepCompleted();
+		steps[currentStep].selectStep();
 	}
 
 	@Override

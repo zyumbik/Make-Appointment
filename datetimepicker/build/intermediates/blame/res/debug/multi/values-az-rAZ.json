@@ -1,0 +1,216 @@
+[
+    {
+        "outputFile": "/Users/glebsabirzanov/Documents/Code/Android/MakeAppointment/datetimepicker/build/intermediates/res/merged/debug/values-az-rAZ/values-az-rAZ.xml",
+        "map": [
+            {
+                "to": {
+                    "startLine": 2,
+                    "startColumn": 4,
+                    "startOffset": 105,
+                    "endColumn": 97,
+                    "endOffset": 198
+                },
+                "from": {
+                    "file": "/Users/glebsabirzanov/Documents/Code/Android/MakeAppointment/datetimepicker/src/main/res/values-az-rAZ/strings.xml",
+                    "position": {
+                        "startLine": 24,
+                        "startColumn": 4,
+                        "startOffset": 1264,
+                        "endColumn": 97,
+                        "endOffset": 1357
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 3,
+                    "startColumn": 4,
+                    "startOffset": 203,
+                    "endColumn": 106,
+                    "endOffset": 305
+                },
+                "from": {
+                    "file": "/Users/glebsabirzanov/Documents/Code/Android/MakeAppointment/datetimepicker/src/main/res/values-az-rAZ/strings.xml",
+                    "position": {
+                        "startLine": 29,
+                        "startColumn": 4,
+                        "startOffset": 1737,
+                        "endColumn": 110,
+                        "endOffset": 1843
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 4,
+                    "startColumn": 4,
+                    "startOffset": 310,
+                    "endColumn": 74,
+                    "endOffset": 380
+                },
+                "from": {
+                    "file": "/Users/glebsabirzanov/Documents/Code/Android/MakeAppointment/datetimepicker/src/main/res/values-az-rAZ/strings.xml",
+                    "position": {
+                        "startLine": 19,
+                        "startColumn": 4,
+                        "startOffset": 809,
+                        "endColumn": 74,
+                        "endOffset": 879
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 5,
+                    "startColumn": 4,
+                    "startOffset": 385,
+                    "endColumn": 103,
+                    "endOffset": 484
+                },
+                "from": {
+                    "file": "/Users/glebsabirzanov/Documents/Code/Android/MakeAppointment/datetimepicker/src/main/res/values-az-rAZ/strings.xml",
+                    "position": {
+                        "startLine": 20,
+                        "startColumn": 4,
+                        "startOffset": 884,
+                        "endColumn": 103,
+                        "endOffset": 983
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 6,
+                    "startColumn": 4,
+                    "startOffset": 489,
+                    "endColumn": 112,
+                    "endOffset": 597
+                },
+                "from": {
+                    "file": "/Users/glebsabirzanov/Documents/Code/Android/MakeAppointment/datetimepicker/src/main/res/values-az-rAZ/strings.xml",
+                    "position": {
+                        "startLine": 28,
+                        "startColumn": 4,
+                        "startOffset": 1620,
+                        "endColumn": 116,
+                        "endOffset": 1732
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 7,
+                    "startColumn": 4,
+                    "startOffset": 602,
+                    "endColumn": 107,
+                    "endOffset": 705
+                },
+                "from": {
+                    "file": "/Users/glebsabirzanov/Documents/Code/Android/MakeAppointment/datetimepicker/src/main/res/values-az-rAZ/strings.xml",
+                    "position": {
+                        "startLine": 21,
+                        "startColumn": 4,
+                        "startOffset": 988,
+                        "endColumn": 107,
+                        "endOffset": 1091
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 8,
+                    "startColumn": 4,
+                    "startOffset": 710,
+                    "endColumn": 84,
+                    "endOffset": 790
+                },
+                "from": {
+                    "file": "/Users/glebsabirzanov/Documents/Code/Android/MakeAppointment/datetimepicker/src/main/res/values-az-rAZ/strings.xml",
+                    "position": {
+                        "startLine": 26,
+                        "startColumn": 4,
+                        "startOffset": 1456,
+                        "endColumn": 84,
+                        "endOffset": 1536
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 9,
+                    "startColumn": 4,
+                    "startOffset": 795,
+                    "endColumn": 81,
+                    "endOffset": 872
+                },
+                "from": {
+                    "file": "/Users/glebsabirzanov/Documents/Code/Android/MakeAppointment/datetimepicker/src/main/res/values-az-rAZ/strings.xml",
+                    "position": {
+                        "startLine": 22,
+                        "startColumn": 4,
+                        "startOffset": 1096,
+                        "endColumn": 81,
+                        "endOffset": 1173
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 10,
+                    "startColumn": 4,
+                    "startOffset": 877,
+                    "endColumn": 85,
+                    "endOffset": 958
+                },
+                "from": {
+                    "file": "/Users/glebsabirzanov/Documents/Code/Android/MakeAppointment/datetimepicker/src/main/res/values-az-rAZ/strings.xml",
+                    "position": {
+                        "startLine": 23,
+                        "startColumn": 4,
+                        "startOffset": 1178,
+                        "endColumn": 85,
+                        "endOffset": 1259
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 11,
+                    "startColumn": 4,
+                    "startOffset": 963,
+                    "endColumn": 78,
+                    "endOffset": 1037
+                },
+                "from": {
+                    "file": "/Users/glebsabirzanov/Documents/Code/Android/MakeAppointment/datetimepicker/src/main/res/values-az-rAZ/strings.xml",
+                    "position": {
+                        "startLine": 27,
+                        "startColumn": 4,
+                        "startOffset": 1541,
+                        "endColumn": 78,
+                        "endOffset": 1615
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 12,
+                    "startColumn": 4,
+                    "startOffset": 1042,
+                    "endColumn": 93,
+                    "endOffset": 1131
+                },
+                "from": {
+                    "file": "/Users/glebsabirzanov/Documents/Code/Android/MakeAppointment/datetimepicker/src/main/res/values-az-rAZ/strings.xml",
+                    "position": {
+                        "startLine": 25,
+                        "startColumn": 4,
+                        "startOffset": 1362,
+                        "endColumn": 93,
+                        "endOffset": 1451
+                    }
+                }
+            }
+        ]
+    }
+]

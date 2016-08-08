@@ -21,14 +21,25 @@ public class AppointmentData {
 
 	@Override
 	public String toString() {
-		return "AppointmentData{" +
-				"hour=" + hour +
-				", minute=" + minute +
-				", day=" + day +
-				", month=" + month +
-				", year=" + year +
-				", office=" + office +
-				'}';
+		return  getTime() + "\n" +
+				getDate() + "\n" +
+				office;
+	}
+
+	public String getDateTime() {
+		return getDate() + " " + getTime();
+	}
+
+	public String getDate() {
+		return formatNumber(day) + "." + formatNumber(month) + "." + year;
+	}
+
+	public String getTime() {
+		return formatNumber(hour) + ":" + formatNumber(minute);
+	}
+
+	public String formatNumber(int number) {
+		return String.format("%1$02d", number);
 	}
 
 	public BankOffice getOffice() {
