@@ -68,4 +68,23 @@ public class AppointmentData {
 		return object;
 	}
 
+	public int getHour() {
+		return hour;
+	}
+
+	public int getMinute() {
+		return minute;
+	}
+
+	public int getDay() {
+		return day;
+	}
+
+	public int getMonth() {
+		return month;
+	}
+
+	public int getYear() {
+		return year;
+	}
 }

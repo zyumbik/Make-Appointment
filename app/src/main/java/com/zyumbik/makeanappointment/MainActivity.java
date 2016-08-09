@@ -1,7 +1,11 @@
 package com.zyumbik.makeanappointment;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -15,6 +19,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.android.datetimepicker.date.DatePickerDialog;
 import com.android.datetimepicker.time.RadialPickerLayout;
@@ -25,9 +30,13 @@ import com.google.android.gms.location.LocationServices;
 import com.zyumbik.makeanappointment.custom_views.StepLayout;
 import com.zyumbik.makeanappointment.data_models.AppointmentData;
 import com.zyumbik.makeanappointment.data_models.BankOffice;
+import com.zyumbik.makeanappointment.utils.AlarmBroadcastReceiver;
+import com.zyumbik.makeanappointment.utils.BootBroadcastReceiver;
 import com.zyumbik.makeanappointment.utils.DataSender;
+import com.zyumbik.makeanappointment.utils.NotificationDataPreferences;
 import com.zyumbik.makeanappointment.utils.PermissionUtils;
 
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 public class MainActivity extends AppCompatActivity implements OfficeMapFragment.OnFragmentInteractionListener,
@@ -251,11 +260,19 @@ public class MainActivity extends AppCompatActivity implements OfficeMapFragment
 	}
 
 	@Override
-	public void onSuccess(String outputMessage) {
+	public void onSuccess(int numberReturned) {
 		dismissProgressDialog();
+		if (numberReturned == 1) {
+			Toast.makeText(MainActivity.this, "Your appointment was made successfully", Toast.LENGTH_LONG).show();
+		}
+		Calendar cal = Calendar.getInstance();
+		cal.set(appointmentData.getYear(), appointmentData.getMonth(), appointmentData.getDay(), appointmentData.getHour(), appointmentData.getMinute());
+		NotificationDataPreferences.saveDateInMillis(this, "AppointmentTime", cal.getTimeInMillis());
+		new BootBroadcastReceiver().setAlarm(this);
 	}
 	@Override
 	public void onError(String errorMessage) {
 		dismissProgressDialog();
 	}
+
 }

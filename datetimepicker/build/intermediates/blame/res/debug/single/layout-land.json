@@ -1,10 +1,10 @@
 [
     {
-        "merged": "/Users/glebsabirzanov/Documents/Code/Android/MakeAppointment/datetimepicker/build/intermediates/res/merged/debug/layout-land/time_picker_dialog.xml",
-        "source": "/Users/glebsabirzanov/Documents/Code/Android/MakeAppointment/datetimepicker/src/main/res/layout-land/time_picker_dialog.xml"
-    },
-    {
         "merged": "/Users/glebsabirzanov/Documents/Code/Android/MakeAppointment/datetimepicker/build/intermediates/res/merged/debug/layout-land/date_picker_dialog.xml",
         "source": "/Users/glebsabirzanov/Documents/Code/Android/MakeAppointment/datetimepicker/src/main/res/layout-land/date_picker_dialog.xml"
+    },
+    {
+        "merged": "/Users/glebsabirzanov/Documents/Code/Android/MakeAppointment/datetimepicker/build/intermediates/res/merged/debug/layout-land/time_picker_dialog.xml",
+        "source": "/Users/glebsabirzanov/Documents/Code/Android/MakeAppointment/datetimepicker/src/main/res/layout-land/time_picker_dialog.xml"
     }
 ]
