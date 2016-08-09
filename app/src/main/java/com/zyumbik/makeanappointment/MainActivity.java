@@ -15,6 +15,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
+import android.widget.Toast;
 
 import com.android.datetimepicker.date.DatePickerDialog;
 import com.android.datetimepicker.time.RadialPickerLayout;
@@ -24,7 +26,9 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.zyumbik.makeanappointment.custom_views.StepLayout;
 import com.zyumbik.makeanappointment.data_models.AppointmentData;
+import com.zyumbik.makeanappointment.data_models.AppointmentNotificationData;
 import com.zyumbik.makeanappointment.data_models.BankOffice;
+import com.zyumbik.makeanappointment.utils.BootBroadcastReceiver;
 import com.zyumbik.makeanappointment.utils.DataSender;
 import com.zyumbik.makeanappointment.utils.PermissionUtils;
 
@@ -47,6 +51,9 @@ public class MainActivity extends AppCompatActivity implements OfficeMapFragment
 	private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
 	private boolean permissionDenied = false;
 	private Location lastLocation;
+	private boolean sendNotifications = false;
+
+	private ScrollView scrollView;
 
 	private AppointmentData appointmentData;
 
@@ -74,6 +81,8 @@ public class MainActivity extends AppCompatActivity implements OfficeMapFragment
 		}
 		setContentView(mainView);
 
+		// Scroll view to handle touch events
+		scrollView = (ScrollView) findViewById(R.id.scrollview_main);
 		// Inflate button for the last step
 		((FrameLayout) steps[2].getContent()).addView(inflater.inflate(R.layout.confirmation_step, null));
 	}
@@ -122,13 +131,19 @@ public class MainActivity extends AppCompatActivity implements OfficeMapFragment
 	}
 
 	@Override
-	public void onConfirm() {
+	public void onConfirm(boolean sendNotifications) {
+		this.sendNotifications = sendNotifications;
 		new DataSender(appointmentData, "https://google.com", this);
 		for (StepLayout step : steps) {
 			step.setStepClickable(false);
 			step.deselectStep();
 			step.stepCompleted();
 		}
+	}
+
+	@Override
+	public void onReset() {
+		recreate();
 	}
 
 	@Override
@@ -149,6 +164,11 @@ public class MainActivity extends AppCompatActivity implements OfficeMapFragment
 	@Override
 	public void onMarkersLoaded() {
 		dismissProgressDialog();
+	}
+
+	@Override
+	public void onMapTouch() {
+		scrollView.requestDisallowInterceptTouchEvent(true);
 	}
 
 	@Override
@@ -207,8 +227,8 @@ public class MainActivity extends AppCompatActivity implements OfficeMapFragment
 		if (progressDialog == null) {
 			progressDialog = new ProgressDialog(this);
 			progressDialog.setCancelable(false);
-			progressDialog.setTitle("Loading");
-			progressDialog.setMessage("Please wait...");
+			progressDialog.setTitle(getString(R.string.progress_dialog_title));
+			progressDialog.setMessage(getString(R.string.progress_dialog_message));
 		}
 		progressDialog.show();
 	}
@@ -251,11 +271,26 @@ public class MainActivity extends AppCompatActivity implements OfficeMapFragment
 	}
 
 	@Override
-	public void onSuccess(String outputMessage) {
+	public void onSuccess(int numberReturned) {
 		dismissProgressDialog();
+		if (numberReturned == 1) {
+			Toast.makeText(MainActivity.this, R.string.toast_make_success, Toast.LENGTH_LONG).show();
+			if (sendNotifications) {
+				AppointmentNotificationData notificationData = new AppointmentNotificationData();
+				notificationData.addAppointment(appointmentData);
+				notificationData.sendDataToNotificationPreferences(this);
+				new BootBroadcastReceiver().setAlarm(this);
+			}
+		} else {
+			Toast.makeText(MainActivity.this, R.string.toast_make_fail, Toast.LENGTH_LONG).show();
+			steps[2].selectStep();
+			steps[2].setStepClickable(true);
+			steps[2].stepIncomplete();
+		}
 	}
 	@Override
 	public void onError(String errorMessage) {
 		dismissProgressDialog();
 	}
+
 }

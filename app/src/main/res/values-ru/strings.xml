@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Встретиться с нами</string>
+    <string name="checkbox_notify_me">Сообщить мне о приближающейся встрече</string>
+    <string name="confirm">Встретиться</string>
+    <string name="location_permission_denied">Этому приложению необходимо разрешение на определение вашего местоположения.\nЕсли разрешение было отключено, его можно включить в настройках системы.</string>
+    <string name="make_another_one">Еще одна</string>
+    <string name="notificationMessage" formatted="false">"Сегодня в %d:%d по адресу "</string>
+    <string name="notification_title">Напоминание о встрече</string>
+    <string name="permission_rationale_location">Определение местоположения необходимо для отображения вашего местоположения на карте.</string>
+    <string name="permission_required_toast">Необходим доступ к вашему местоположению</string>
+    <string name="progress_dialog_message">Пожалуйста, подождите...</string>
+    <string name="progress_dialog_title">Загрузка</string>
+    <string name="step_1_header">Выберите офис</string>
+    <string name="step_1_subhead">Офис Восточного банка в котором вы хотели бы с нами встретиться</string>
+    <string name="step_2_header">Назначьте дату и время </string>
+    <string name="step_2_subhead">Выберите удобное для встречи с нами время</string>
+    <string name="step_3_header">Подтвердите</string>
+    <string name="step_3_subhead">Убедитесь в правильности данных для встречи и нажмите на кнопку</string>
+    <string name="title_activity_maps">Карта</string>
+    <string name="toast_make_fail">Не удалось назначить встречу. Попробуйте еще раз.</string>
+    <string name="toast_make_success">Встреча успешно назначена</string>
+</resources>

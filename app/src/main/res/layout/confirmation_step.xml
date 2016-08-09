@@ -1,9 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Button
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/button_confirm"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    style="@style/Base.Widget.AppCompat.Button.Colored"
-    android:enabled="false"
-    android:text="@string/confirm"/>
+    android:orientation="vertical">
+
+    <CheckBox
+        android:id="@+id/checkbox_send_notifications"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:checked="true"
+        android:visibility="gone"
+        style="@style/Base.Widget.AppCompat.CompoundButton.CheckBox"
+        android:text="@string/checkbox_notify_me"/>
+
+    <Button
+        android:id="@+id/button_confirm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/checkbox_send_notifications"
+        style="@style/Base.Widget.AppCompat.Button.Colored"
+        android:enabled="false"
+        android:text="@string/confirm"/>
+
+    <Button
+        android:id="@+id/button_new_appointment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/button_confirm"
+        android:layout_toEndOf="@id/button_confirm"
+        android:layout_below="@id/checkbox_send_notifications"
+        android:visibility="gone"
+        style="@style/Base.Widget.AppCompat.Button.Colored"
+        android:text="@string/make_another_one"/>
+
+</RelativeLayout>

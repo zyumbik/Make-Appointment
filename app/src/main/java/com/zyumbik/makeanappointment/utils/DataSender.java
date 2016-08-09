@@ -16,6 +16,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.Random;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -25,7 +26,9 @@ import javax.net.ssl.HttpsURLConnection;
  * I don't know if it works,
  * USE AT YOUR OWN RISK! */
 
-public class DataSender extends AsyncTask <String, String, String> {
+/** Now it just returns 0 or 1 randomly (with higher chance of 1) */
+
+public class DataSender extends AsyncTask <String, String, Integer> {
 
 	private AppointmentData appointmentData;
 	private OnTaskFinished listener;
@@ -74,6 +77,7 @@ public class DataSender extends AsyncTask <String, String, String> {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			listener.onError(e.getLocalizedMessage());
 		}
 		return response;
 	}
@@ -85,7 +89,7 @@ public class DataSender extends AsyncTask <String, String, String> {
 	}
 
 	@Override
-	protected void onPostExecute(String s) {
+	protected void onPostExecute(Integer s) {
 		listener.onSuccess(s);
 		super.onPostExecute(s);
 	}
@@ -95,20 +99,28 @@ public class DataSender extends AsyncTask <String, String, String> {
 	}
 
 	@Override
-	protected String doInBackground(String... params) {
-		String s = "";
+	protected Integer doInBackground(String... params) {
 		try {
-			s = performPostCall(params[0], appointmentData.getAppointmentJSON());
-		} catch (JSONException e) {
-			listener.onError(e.getMessage());
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		return s;
+		Random random = new Random();
+		if (random.nextInt(3) != 1) {
+			return 1;
+		}
+//		try {
+//			s = performPostCall(params[0], appointmentData.getAppointmentJSON());
+//		} catch (JSONException e) {
+//			listener.onError(e.getMessage());
+//			e.printStackTrace();
+//		}
+		return 0;
 	}
 
 	public interface OnTaskFinished {
 		void onTaskStarted();
-		void onSuccess(String outputMessage);
+		void onSuccess(int status);
 		void onError(String errorMessage);
 	}
 

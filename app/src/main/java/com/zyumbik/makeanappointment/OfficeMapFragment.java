@@ -13,10 +13,11 @@ import android.view.ViewGroup;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.zyumbik.makeanappointment.custom_views.CustomMapView;
 import com.zyumbik.makeanappointment.data_models.BankOffice;
 import com.zyumbik.makeanappointment.utils.SearchURLConfiguration;
 
@@ -32,10 +33,12 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+
 public class OfficeMapFragment extends Fragment implements
 		OnMapReadyCallback,
 		GoogleMap.OnMarkerClickListener,
-		GoogleMap.OnInfoWindowClickListener {
+		GoogleMap.OnInfoWindowClickListener,
+		CustomMapView.OnMapTouchListener {
 
 	// Bundle params names
 	private static final String LAT = "LATITUDE", LNG = "LONGITUDE", PERMISSION_DENIED = "PERMISSION";
@@ -49,6 +52,7 @@ public class OfficeMapFragment extends Fragment implements
 	private static GoogleMap map;
 	private static Map<String, BankOffice> offices;
 
+	private CustomMapView mapView;
 	private OnFragmentInteractionListener interactionListener;
 
 	public static OfficeMapFragment newInstance(Location lastLocation, boolean permissionDenied) {
@@ -79,9 +83,16 @@ public class OfficeMapFragment extends Fragment implements
 			lastLongitude = getArguments().getDouble(LNG);
 			permissionDenied = getArguments().getBoolean(PERMISSION_DENIED);
 		}
-		SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
-				.findFragmentById(R.id.map);
-		mapFragment.getMapAsync(this);
+		mapView = (CustomMapView) v.findViewById(R.id.map_view);
+		mapView.onCreate(savedInstanceState);
+		mapView.onResume();
+		try {
+			MapsInitializer.initialize(getActivity().getApplicationContext());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		mapView.setOnMapTouchListener(this);
+		mapView.getMapAsync(this);
 		return v;
 	}
 
@@ -216,6 +227,11 @@ public class OfficeMapFragment extends Fragment implements
 		map.setMyLocationEnabled(true);
 	}
 
+	@Override
+	public void onTouch() {
+		interactionListener.onMapTouch();
+	}
+
 	private class GetOfficeData extends AsyncTask<Void, Void, Void> {
 
 		@Override
@@ -242,6 +258,7 @@ public class OfficeMapFragment extends Fragment implements
 		void onMarkerClicked(BankOffice office);
 		void onInfoWindowClick(BankOffice office);
 		void onMarkersLoaded();
+		void onMapTouch();
 	}
 
 }

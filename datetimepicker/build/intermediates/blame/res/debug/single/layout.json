@@ -24,11 +24,11 @@
         "source": "/Users/glebsabirzanov/Documents/Code/Android/MakeAppointment/datetimepicker/src/main/res/layout/date_picker_header_view.xml"
     },
     {
-        "merged": "/Users/glebsabirzanov/Documents/Code/Android/MakeAppointment/datetimepicker/build/intermediates/res/merged/debug/layout/time_header_label.xml",
-        "source": "/Users/glebsabirzanov/Documents/Code/Android/MakeAppointment/datetimepicker/src/main/res/layout/time_header_label.xml"
-    },
-    {
         "merged": "/Users/glebsabirzanov/Documents/Code/Android/MakeAppointment/datetimepicker/build/intermediates/res/merged/debug/layout/date_picker_view_animator.xml",
         "source": "/Users/glebsabirzanov/Documents/Code/Android/MakeAppointment/datetimepicker/src/main/res/layout/date_picker_view_animator.xml"
+    },
+    {
+        "merged": "/Users/glebsabirzanov/Documents/Code/Android/MakeAppointment/datetimepicker/build/intermediates/res/merged/debug/layout/time_header_label.xml",
+        "source": "/Users/glebsabirzanov/Documents/Code/Android/MakeAppointment/datetimepicker/src/main/res/layout/time_header_label.xml"
     }
 ]

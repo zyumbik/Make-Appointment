@@ -6,6 +6,7 @@ import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -25,6 +26,8 @@ public class StepLayout extends RelativeLayout {
 	private TextView subhead, buttonText;
 	private ImageButton stepButton;
 	private Button buttonConfirm;
+	private CheckBox notifyMe;
+	private View buttonReset;
 
 	private onStepInteractionListener interactionListener;
 	private OnClickListener clickListener;
@@ -75,14 +78,28 @@ public class StepLayout extends RelativeLayout {
 		interactionListener.onStepSelect(stepNumber);
 		clickable = true;
 		if (stepNumber == 3) {
-			buttonConfirm = (Button) content.findViewById(R.id.button_confirm);
-			buttonConfirm.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					interactionListener.onConfirm();
-					buttonConfirm.setEnabled(false);
-				}
-			});
+			setCheckBoxEnabled(true);
+			if (buttonConfirm == null) {
+				buttonConfirm = (Button) content.findViewById(R.id.button_confirm);
+				buttonConfirm.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						interactionListener.onConfirm(notifyMe.isChecked());
+						buttonConfirm.setEnabled(false);
+						if (buttonReset == null) {
+							buttonReset = findViewById(R.id.button_new_appointment);
+						}
+						buttonReset.setVisibility(VISIBLE);
+						setCheckBoxEnabled(false);
+						buttonReset.setOnClickListener(new OnClickListener() {
+							@Override
+							public void onClick(View v) {
+								interactionListener.onReset();
+							}
+						});
+					}
+				});
+			}
 			buttonConfirm.setEnabled(true);
 		}
 	}
@@ -93,8 +110,23 @@ public class StepLayout extends RelativeLayout {
 		if (stepNumber != 3) {
 			content.setVisibility(GONE);
 		}
+		if (stepNumber == 3) {
+			setCheckBoxEnabled(false);
+		}
 		if (stepNumber == 1) {
 			switchConnectorParams();
+		}
+	}
+
+	public void setCheckBoxEnabled(boolean enable) {
+		if (notifyMe == null) {
+			notifyMe = (CheckBox) findViewById(R.id.checkbox_send_notifications);
+		}
+		if (notifyMe != null) {
+			notifyMe.setEnabled(enable);
+			if (enable) {
+				notifyMe.setVisibility(VISIBLE);
+			}
 		}
 	}
 
@@ -102,6 +134,16 @@ public class StepLayout extends RelativeLayout {
 	public void stepCompleted() {
 		stepButton.setImageDrawable(ContextCompat.getDrawable(this.getContext(), R.drawable.ic_check_16dp));
 		buttonText.setText("");
+	}
+
+	// Called when needed to make step incomplete (confirmation fail)
+	public void stepIncomplete() {
+		stepButton.setImageDrawable(null);
+		buttonText.setText(String.valueOf(stepNumber));
+		if (buttonReset == null) {
+			buttonReset = findViewById(R.id.button_new_appointment);
+		}
+		buttonReset.setVisibility(GONE);
 	}
 
 	// Step can be selected if it is clickable and not selected already
@@ -148,7 +190,8 @@ public class StepLayout extends RelativeLayout {
 	public interface onStepInteractionListener {
 		void onStepClick(int stepNumber);
 		void onStepSelect(int stepNumber);
-		void onConfirm();
+		void onConfirm(boolean sendNotifications);
+		void onReset();
 	}
 
 	// When step has no content in it, it's connector line should be 32dp.
