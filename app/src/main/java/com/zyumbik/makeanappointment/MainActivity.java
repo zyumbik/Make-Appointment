@@ -24,17 +24,14 @@ import com.android.datetimepicker.time.TimePickerDialog;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
-import com.zyumbik.makeanappointment.custom_views.CustomMapView;
 import com.zyumbik.makeanappointment.custom_views.StepLayout;
 import com.zyumbik.makeanappointment.data_models.AppointmentData;
 import com.zyumbik.makeanappointment.data_models.AppointmentNotificationData;
 import com.zyumbik.makeanappointment.data_models.BankOffice;
 import com.zyumbik.makeanappointment.utils.BootBroadcastReceiver;
 import com.zyumbik.makeanappointment.utils.DataSender;
-import com.zyumbik.makeanappointment.utils.NotificationDataPreferences;
 import com.zyumbik.makeanappointment.utils.PermissionUtils;
 
-import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 public class MainActivity extends AppCompatActivity implements OfficeMapFragment.OnFragmentInteractionListener,
@@ -230,8 +227,8 @@ public class MainActivity extends AppCompatActivity implements OfficeMapFragment
 		if (progressDialog == null) {
 			progressDialog = new ProgressDialog(this);
 			progressDialog.setCancelable(false);
-			progressDialog.setTitle("Loading");
-			progressDialog.setMessage("Please wait...");
+			progressDialog.setTitle(getString(R.string.progress_dialog_title));
+			progressDialog.setMessage(getString(R.string.progress_dialog_message));
 		}
 		progressDialog.show();
 	}
@@ -277,7 +274,7 @@ public class MainActivity extends AppCompatActivity implements OfficeMapFragment
 	public void onSuccess(int numberReturned) {
 		dismissProgressDialog();
 		if (numberReturned == 1) {
-			Toast.makeText(MainActivity.this, "Your appointment was made successfully", Toast.LENGTH_LONG).show();
+			Toast.makeText(MainActivity.this, R.string.toast_make_success, Toast.LENGTH_LONG).show();
 			if (sendNotifications) {
 				AppointmentNotificationData notificationData = new AppointmentNotificationData();
 				notificationData.addAppointment(appointmentData);
@@ -285,7 +282,7 @@ public class MainActivity extends AppCompatActivity implements OfficeMapFragment
 				new BootBroadcastReceiver().setAlarm(this);
 			}
 		} else {
-			Toast.makeText(MainActivity.this, "Can't make an appointment. Try again, please.", Toast.LENGTH_LONG).show();
+			Toast.makeText(MainActivity.this, R.string.toast_make_fail, Toast.LENGTH_LONG).show();
 			steps[2].selectStep();
 			steps[2].setStepClickable(true);
 			steps[2].stepIncomplete();

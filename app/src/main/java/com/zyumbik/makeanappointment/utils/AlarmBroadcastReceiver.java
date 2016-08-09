@@ -28,7 +28,7 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
 		NotificationCompat.Builder notificationBuilder =
 				new NotificationCompat.Builder(context)
 						.setSmallIcon(R.drawable.ic_media_play)
-						.setContentTitle("Don't forget about the appointment")
+						.setContentTitle(context.getString(R.string.notification_title))
 						.setContentText(message);
 		NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 		notificationManager.notify((int)((new Date().getTime() / 1000L) % Integer.MAX_VALUE), notificationBuilder.build());

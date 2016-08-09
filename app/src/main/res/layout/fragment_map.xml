@@ -2,14 +2,14 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="256dp"
+    android:layout_height="@dimen/map_height"
     tools:context=".OfficeMapFragment">
 
     <com.zyumbik.makeanappointment.custom_views.CustomMapView
         android:id="@+id/map_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginEnd="0dp"
-        android:layout_marginRight="0dp"/>
+        android:layout_marginEnd="@dimen/map_right_margin"
+        android:layout_marginRight="@dimen/map_right_margin"/>
 
 </FrameLayout>

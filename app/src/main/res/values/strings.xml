@@ -13,7 +13,18 @@
     <string name="step_1_subhead">Choose the office on the map you want to make an appointment in</string>
     <string name="step_2_subhead">Select appropriate date and time</string>
     <string name="step_3_subhead">Confirm details about your appointment</string>
-    <string name="confirm">Confirm</string>
+
+    <string name="progress_dialog_title">Loading</string>
+    <string name="progress_dialog_message">Please wait…</string>
+
+    <string name="notification_title">Don\'t forget about the appointment</string>
     <string name="notificationMessage" formatted="false">"Today at %d:%d at "</string>
+
+    <string name="toast_make_success">Your appointment was made successfully</string>
+    <string name="toast_make_fail">Can\'t make an appointment. Try again, please.</string>
+
+    <string name="confirm">Confirm</string>
+    <string name="checkbox_notify_me">Notify me when the appointment is soon</string>
+    <string name="make_another_one">Make another one</string>
 
 </resources>

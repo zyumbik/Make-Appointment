@@ -12,7 +12,7 @@
         android:checked="true"
         android:visibility="gone"
         style="@style/Base.Widget.AppCompat.CompoundButton.CheckBox"
-        android:text="Notify me when the appointment is soon"/>
+        android:text="@string/checkbox_notify_me"/>
 
     <Button
         android:id="@+id/button_confirm"
@@ -32,6 +32,6 @@
         android:layout_below="@id/checkbox_send_notifications"
         android:visibility="gone"
         style="@style/Base.Widget.AppCompat.Button.Colored"
-        android:text="Make another one"/>
+        android:text="@string/make_another_one"/>
 
 </RelativeLayout>

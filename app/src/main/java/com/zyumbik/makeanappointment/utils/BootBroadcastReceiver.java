@@ -35,10 +35,6 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
 		appointmentTime = Calendar.getInstance();
 		data = new AppointmentNotificationData(context);
 
-//		AlarmBroadcastReceiver receiver = new AlarmBroadcastReceiver();
-//		IntentFilter filter = new IntentFilter("ALARM_ACTION");
-//		context.registerReceiver(receiver, filter);
-
 		for (int i = 0; i < data.length(); i++) {
 			// Create two notifications: a day and an hour before the appointment
 			createNotificationForTime(86400000L, i);
