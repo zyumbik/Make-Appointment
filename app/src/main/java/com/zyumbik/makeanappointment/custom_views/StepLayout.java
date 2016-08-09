@@ -77,15 +77,16 @@ public class StepLayout extends RelativeLayout {
 		clickable = true;
 		if (stepNumber == 3) {
 			if (buttonConfirm == null) {
+				final CheckBox notifyMe = (CheckBox) findViewById(R.id.checkbox_send_notifications);
+				notifyMe.setEnabled(true);
+				notifyMe.setVisibility(VISIBLE);
 				buttonConfirm = (Button) content.findViewById(R.id.button_confirm);
 				buttonConfirm.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						CheckBox notifyMe = (CheckBox) findViewById(R.id.checkbox_send_notifications);
-						notifyMe.setVisibility(VISIBLE);
 						interactionListener.onConfirm(notifyMe.isChecked());
 						buttonConfirm.setEnabled(false);
-						View buttonReset = findViewById(R.id.button_new_appointment);
+						final View buttonReset = findViewById(R.id.button_new_appointment);
 						buttonReset.setVisibility(VISIBLE);
 						buttonReset.setOnClickListener(new OnClickListener() {
 							@Override
@@ -106,6 +107,11 @@ public class StepLayout extends RelativeLayout {
 		if (stepNumber != 3) {
 			content.setVisibility(GONE);
 		}
+		if (stepNumber == 3) {
+			if (content.findViewById(R.id.checkbox_send_notifications) != null) {
+				findViewById(R.id.checkbox_send_notifications).setEnabled(false);
+			}
+		}
 		if (stepNumber == 1) {
 			switchConnectorParams();
 		}
@@ -117,6 +123,7 @@ public class StepLayout extends RelativeLayout {
 		buttonText.setText("");
 	}
 
+	// Called when needed to make step incomplete (confirmation fail)
 	public void stepIncomplete() {
 		stepButton.setImageDrawable(null);
 		buttonText.setText(String.valueOf(stepNumber));

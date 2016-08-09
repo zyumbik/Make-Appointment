@@ -269,7 +269,7 @@ public class MainActivity extends AppCompatActivity implements OfficeMapFragment
 		if (numberReturned == 1) {
 			Toast.makeText(MainActivity.this, "Your appointment was made successfully", Toast.LENGTH_LONG).show();
 			if (sendNotifications) {
-				AppointmentNotificationData notificationData = new AppointmentNotificationData(this);
+				AppointmentNotificationData notificationData = new AppointmentNotificationData();
 				notificationData.addAppointment(appointmentData);
 				notificationData.sendDataToNotificationPreferences(this);
 				new BootBroadcastReceiver().setAlarm(this);

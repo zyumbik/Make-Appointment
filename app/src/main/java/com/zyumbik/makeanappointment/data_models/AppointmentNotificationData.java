@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+import java.util.StringTokenizer;
 
 /** Created by glebsabirzanov on 09/08/16. */
 /** Stores data about the appointment to show the notification */
@@ -26,28 +27,27 @@ public class AppointmentNotificationData {
 		if (addresses.length != dates.length) {
 			return;
 		}
-		this.addresses = (ArrayList<String>) Arrays.asList(addresses);
-		this.dates = (ArrayList<Long>) Arrays.asList(dates);
+		this.addresses = new ArrayList<>(Arrays.asList(addresses));
+		this.dates = new ArrayList<>(Arrays.asList(dates));
 	}
 
 	public AppointmentNotificationData(Context context) {
-		addresses = (ArrayList<String>) Arrays.asList(NotificationDataPreferences
-				.loadArray(context, NotificationDataPreferences.ARRAY_ADDRESSES_NAME, new String[0]));
-		dates = (ArrayList<Long>) Arrays.asList(NotificationDataPreferences
-				.loadArray(context, NotificationDataPreferences.ARRAY_DATES_NAME, new Long[0]));
+		addresses = new ArrayList<>(Arrays.asList(NotificationDataPreferences
+				.loadArray(context, NotificationDataPreferences.ARRAY_ADDRESSES_NAME, new String[0])));
+		dates = new ArrayList<>(Arrays.asList(NotificationDataPreferences
+				.loadArray(context, NotificationDataPreferences.ARRAY_DATES_NAME, new Long[0])));
 	}
 
 	public void sendDataToNotificationPreferences(Context context) {
+			NotificationDataPreferences.saveArray(context, addresses,
+					NotificationDataPreferences.ARRAY_ADDRESSES_NAME);
 			NotificationDataPreferences.saveArray(context,
-					NotificationDataPreferences.ARRAY_ADDRESSES_NAME, ((String[]) addresses.toArray()));
-			NotificationDataPreferences.saveArray(context,
-					NotificationDataPreferences.ARRAY_DATES_NAME, ((Long[]) dates.toArray()));
+					NotificationDataPreferences.ARRAY_DATES_NAME, dates);
 	}
 
 	public void addAppointment(AppointmentData appointment) {
 		dates.add(appointment.getTimeInMillis());
 		addresses.add(appointment.getOffice().toString());
-		removeOldAppointments();
 	}
 
 	public void addAppointment(String address, long date) {
@@ -81,8 +81,10 @@ public class AppointmentNotificationData {
 		Calendar cal = Calendar.getInstance();
 		long currentTime = cal.getTimeInMillis();
 		for (Long date : dates) {
-			if (date < currentTime) {
-				removeAppointment(date);
+			if (date != null) {
+				if (date < currentTime) {
+					removeAppointment(date);
+				}
 			}
 		}
 	}

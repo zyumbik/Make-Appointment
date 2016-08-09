@@ -35,9 +35,9 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
 		appointmentTime = Calendar.getInstance();
 		data = new AppointmentNotificationData(context);
 
-		AlarmBroadcastReceiver receiver = new AlarmBroadcastReceiver();
-		IntentFilter filter = new IntentFilter("ALARM_ACTION");
-		context.registerReceiver(receiver, filter);
+//		AlarmBroadcastReceiver receiver = new AlarmBroadcastReceiver();
+//		IntentFilter filter = new IntentFilter("ALARM_ACTION");
+//		context.registerReceiver(receiver, filter);
 
 		for (int i = 0; i < data.length(); i++) {
 			// Create two notifications: a day and an hour before the appointment
@@ -48,22 +48,24 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
 
 	private void createNotificationForTime(long notificationTimeBeforeEvent, int indexInData) {
 		// Creates notification at the specified time before appointment
-		appointmentTime.setTimeInMillis(data.getDate(uniqueID));
-		if ((appointmentTime.getTimeInMillis() - currentTime.getTimeInMillis()) >= notificationTimeBeforeEvent) {
+		if (data.length() != 0) {
+			appointmentTime.setTimeInMillis(data.getDate(indexInData));
+			if ((appointmentTime.getTimeInMillis() - currentTime.getTimeInMillis()) >= notificationTimeBeforeEvent) {
 
-			// Generate notification message
-			String notificationMessage = String.format(
-					context.getString(R.string.notificationMessage) + data.getAddress(indexInData),
-					appointmentTime.get(Calendar.HOUR_OF_DAY), appointmentTime.get(Calendar.MINUTE));
+				// Generate notification message
+				String notificationMessage = String.format(
+						context.getString(R.string.notificationMessage) + data.getAddress(indexInData),
+						appointmentTime.get(Calendar.HOUR_OF_DAY), appointmentTime.get(Calendar.MINUTE));
 
-			Intent intent = new Intent("ALARM_ACTION");
-			intent.putExtra("message", notificationMessage);
-			intent.putExtra("time", data.getDate(indexInData));
-			PendingIntent operation = PendingIntent.getBroadcast(context, uniqueID++, intent, 0);
-			alarms.set(AlarmManager.RTC_WAKEUP, appointmentTime.getTimeInMillis() - notificationTimeBeforeEvent, operation);
-		}
-		if (appointmentTime.getTimeInMillis() < currentTime.getTimeInMillis()) {
-			data.removeOldAppointments();
+				Intent intent = new Intent("ALARM_ACTION");
+				intent.putExtra("message", notificationMessage);
+				intent.putExtra("time", data.getDate(indexInData));
+				PendingIntent operation = PendingIntent.getBroadcast(context, uniqueID++, intent, 0);
+				alarms.set(AlarmManager.RTC_WAKEUP, appointmentTime.getTimeInMillis() - notificationTimeBeforeEvent, operation);
+			}
+			if (appointmentTime.getTimeInMillis() < currentTime.getTimeInMillis()) {
+				data.removeOldAppointments();
+			}
 		}
 	}
 

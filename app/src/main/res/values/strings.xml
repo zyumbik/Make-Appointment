@@ -14,6 +14,6 @@
     <string name="step_2_subhead">Select appropriate date and time</string>
     <string name="step_3_subhead">Confirm details about your appointment</string>
     <string name="confirm">Confirm</string>
-    <string name="notificationMessage">"Today at %d:%d at "</string>
+    <string name="notificationMessage" formatted="false">"Today at %d:%d at "</string>
 
 </resources>
