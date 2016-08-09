@@ -30,7 +30,7 @@ public class BankOffice {
 
 	@Override
 	public String toString() {
-		return title + ", " + address;
+		return name + ", " + address;
 	}
 
 	public String getAddress() {

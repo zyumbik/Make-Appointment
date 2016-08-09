@@ -1,11 +1,7 @@
 package com.zyumbik.makeanappointment;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -29,8 +25,8 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.zyumbik.makeanappointment.custom_views.StepLayout;
 import com.zyumbik.makeanappointment.data_models.AppointmentData;
+import com.zyumbik.makeanappointment.data_models.AppointmentNotificationData;
 import com.zyumbik.makeanappointment.data_models.BankOffice;
-import com.zyumbik.makeanappointment.utils.AlarmBroadcastReceiver;
 import com.zyumbik.makeanappointment.utils.BootBroadcastReceiver;
 import com.zyumbik.makeanappointment.utils.DataSender;
 import com.zyumbik.makeanappointment.utils.NotificationDataPreferences;
@@ -56,6 +52,8 @@ public class MainActivity extends AppCompatActivity implements OfficeMapFragment
 	private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
 	private boolean permissionDenied = false;
 	private Location lastLocation;
+
+	private boolean sendNotifications = false;
 
 	private AppointmentData appointmentData;
 
@@ -131,13 +129,19 @@ public class MainActivity extends AppCompatActivity implements OfficeMapFragment
 	}
 
 	@Override
-	public void onConfirm() {
+	public void onConfirm(boolean sendNotifications) {
+		this.sendNotifications = sendNotifications;
 		new DataSender(appointmentData, "https://google.com", this);
 		for (StepLayout step : steps) {
 			step.setStepClickable(false);
 			step.deselectStep();
 			step.stepCompleted();
 		}
+	}
+
+	@Override
+	public void onReset() {
+		recreate();
 	}
 
 	@Override
@@ -264,11 +268,18 @@ public class MainActivity extends AppCompatActivity implements OfficeMapFragment
 		dismissProgressDialog();
 		if (numberReturned == 1) {
 			Toast.makeText(MainActivity.this, "Your appointment was made successfully", Toast.LENGTH_LONG).show();
+			if (sendNotifications) {
+				AppointmentNotificationData notificationData = new AppointmentNotificationData(this);
+				notificationData.addAppointment(appointmentData);
+				notificationData.sendDataToNotificationPreferences(this);
+				new BootBroadcastReceiver().setAlarm(this);
+			}
+		} else {
+			Toast.makeText(MainActivity.this, "Can't make an appointment. Try again, please.", Toast.LENGTH_LONG).show();
+			steps[2].selectStep();
+			steps[2].setStepClickable(true);
+			steps[2].stepIncomplete();
 		}
-		Calendar cal = Calendar.getInstance();
-		cal.set(appointmentData.getYear(), appointmentData.getMonth(), appointmentData.getDay(), appointmentData.getHour(), appointmentData.getMinute());
-		NotificationDataPreferences.saveDateInMillis(this, "AppointmentTime", cal.getTimeInMillis());
-		new BootBroadcastReceiver().setAlarm(this);
 	}
 	@Override
 	public void onError(String errorMessage) {

@@ -1,11 +1,12 @@
 package com.zyumbik.makeanappointment.data_models;
 
-
-/** Created by glebsabirzanov on 07/08/16. */
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Calendar;
+
+
+/** Created by glebsabirzanov on 07/08/16. */
 /** Class containing information about the appointment */
 public class AppointmentData {
 
@@ -30,6 +31,12 @@ public class AppointmentData {
 				office;
 	}
 
+	public long getTimeInMillis() {
+		Calendar cal = Calendar.getInstance();
+		cal.set(year, month, day, hour, minute, 0);
+		return cal.getTimeInMillis();
+	}
+	
 	public String getDateTime() {
 		return getDate() + " " + getTime();
 	}

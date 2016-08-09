@@ -100,10 +100,14 @@ public class DataSender extends AsyncTask <String, String, Integer> {
 
 	@Override
 	protected Integer doInBackground(String... params) {
-		int s = 0;
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		Random random = new Random();
-		if (random.nextInt(3) != 0) {
-			s = 1;
+		if (random.nextInt(3) != 1) {
+			return 1;
 		}
 //		try {
 //			s = performPostCall(params[0], appointmentData.getAppointmentJSON());
@@ -111,7 +115,7 @@ public class DataSender extends AsyncTask <String, String, Integer> {
 //			listener.onError(e.getMessage());
 //			e.printStackTrace();
 //		}
-		return s;
+		return 0;
 	}
 
 	public interface OnTaskFinished {
