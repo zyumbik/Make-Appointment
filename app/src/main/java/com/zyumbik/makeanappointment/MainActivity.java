@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.android.datetimepicker.date.DatePickerDialog;
@@ -23,6 +24,7 @@ import com.android.datetimepicker.time.TimePickerDialog;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
+import com.zyumbik.makeanappointment.custom_views.CustomMapView;
 import com.zyumbik.makeanappointment.custom_views.StepLayout;
 import com.zyumbik.makeanappointment.data_models.AppointmentData;
 import com.zyumbik.makeanappointment.data_models.AppointmentNotificationData;
@@ -52,8 +54,9 @@ public class MainActivity extends AppCompatActivity implements OfficeMapFragment
 	private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
 	private boolean permissionDenied = false;
 	private Location lastLocation;
-
 	private boolean sendNotifications = false;
+
+	private ScrollView scrollView;
 
 	private AppointmentData appointmentData;
 
@@ -81,6 +84,8 @@ public class MainActivity extends AppCompatActivity implements OfficeMapFragment
 		}
 		setContentView(mainView);
 
+		// Scroll view to handle touch events
+		scrollView = (ScrollView) findViewById(R.id.scrollview_main);
 		// Inflate button for the last step
 		((FrameLayout) steps[2].getContent()).addView(inflater.inflate(R.layout.confirmation_step, null));
 	}
@@ -162,6 +167,11 @@ public class MainActivity extends AppCompatActivity implements OfficeMapFragment
 	@Override
 	public void onMarkersLoaded() {
 		dismissProgressDialog();
+	}
+
+	@Override
+	public void onMapTouch() {
+		scrollView.requestDisallowInterceptTouchEvent(true);
 	}
 
 	@Override

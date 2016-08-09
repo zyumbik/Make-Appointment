@@ -26,6 +26,8 @@ public class StepLayout extends RelativeLayout {
 	private TextView subhead, buttonText;
 	private ImageButton stepButton;
 	private Button buttonConfirm;
+	private CheckBox notifyMe;
+	private View buttonReset;
 
 	private onStepInteractionListener interactionListener;
 	private OnClickListener clickListener;
@@ -76,18 +78,19 @@ public class StepLayout extends RelativeLayout {
 		interactionListener.onStepSelect(stepNumber);
 		clickable = true;
 		if (stepNumber == 3) {
+			setCheckBoxEnabled(true);
 			if (buttonConfirm == null) {
-				final CheckBox notifyMe = (CheckBox) findViewById(R.id.checkbox_send_notifications);
-				notifyMe.setEnabled(true);
-				notifyMe.setVisibility(VISIBLE);
 				buttonConfirm = (Button) content.findViewById(R.id.button_confirm);
 				buttonConfirm.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {
 						interactionListener.onConfirm(notifyMe.isChecked());
 						buttonConfirm.setEnabled(false);
-						final View buttonReset = findViewById(R.id.button_new_appointment);
+						if (buttonReset == null) {
+							buttonReset = findViewById(R.id.button_new_appointment);
+						}
 						buttonReset.setVisibility(VISIBLE);
+						setCheckBoxEnabled(false);
 						buttonReset.setOnClickListener(new OnClickListener() {
 							@Override
 							public void onClick(View v) {
@@ -108,12 +111,22 @@ public class StepLayout extends RelativeLayout {
 			content.setVisibility(GONE);
 		}
 		if (stepNumber == 3) {
-			if (content.findViewById(R.id.checkbox_send_notifications) != null) {
-				findViewById(R.id.checkbox_send_notifications).setEnabled(false);
-			}
+			setCheckBoxEnabled(false);
 		}
 		if (stepNumber == 1) {
 			switchConnectorParams();
+		}
+	}
+
+	public void setCheckBoxEnabled(boolean enable) {
+		if (notifyMe == null) {
+			notifyMe = (CheckBox) findViewById(R.id.checkbox_send_notifications);
+		}
+		if (notifyMe != null) {
+			notifyMe.setEnabled(enable);
+			if (enable) {
+				notifyMe.setVisibility(VISIBLE);
+			}
 		}
 	}
 
@@ -127,6 +140,10 @@ public class StepLayout extends RelativeLayout {
 	public void stepIncomplete() {
 		stepButton.setImageDrawable(null);
 		buttonText.setText(String.valueOf(stepNumber));
+		if (buttonReset == null) {
+			buttonReset = findViewById(R.id.button_new_appointment);
+		}
+		buttonReset.setVisibility(GONE);
 	}
 
 	// Step can be selected if it is clickable and not selected already
